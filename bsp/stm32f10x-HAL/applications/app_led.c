@@ -1,6 +1,8 @@
 #include <board.h>
 #include <rtthread.h>
 #include <drivers/pin.h>
+#include "app_main.h"
+
 
 #define pin_led_G 	8	///PC0,greed led
 #define pin_led_B 	9	///PC1,blue led

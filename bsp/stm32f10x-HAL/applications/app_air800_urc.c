@@ -1,7 +1,7 @@
 #include <board.h>
 #include <rtthread.h>
 #include <at.h>
-
+#include "app_main.h"
 
 
 static void urc_RDY(const char *data, rt_size_t size)

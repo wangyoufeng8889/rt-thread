@@ -1,6 +1,6 @@
 #include <board.h>
 #include <rtthread.h>
-
+#include "app_main.h"
 
 static rt_err_t bms_rx_ind(rt_device_t dev, rt_size_t size)
 {

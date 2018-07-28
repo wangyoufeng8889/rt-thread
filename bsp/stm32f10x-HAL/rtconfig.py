@@ -20,7 +20,7 @@ elif CROSS_TOOL == 'keil':
 	EXEC_PATH 	= 'C:/Keilv5'
 elif CROSS_TOOL == 'iar':
 	PLATFORM 	= 'iar'
-	EXEC_PATH 	= 'C:/Program Files/IAR Systems/Embedded Workbench 6.0 Evaluation'
+	EXEC_PATH 	= 'C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.0'
 
 if os.getenv('RTT_EXEC_PATH'):
 	EXEC_PATH = os.getenv('RTT_EXEC_PATH')

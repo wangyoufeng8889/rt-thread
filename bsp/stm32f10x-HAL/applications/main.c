@@ -12,10 +12,10 @@
  * 2015-07-29     Arda.Fu      first implementation
  */
 #include <rtthread.h>
-
+extern int app_thread_entry(void);
 int main(void)
 {
     /* user app entry */
-	//hello
+	app_thread_entry();
     return 0;
 }

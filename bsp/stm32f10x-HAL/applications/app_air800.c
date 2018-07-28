@@ -3,6 +3,7 @@
 #include <drivers/pin.h>
 #include <at.h>
 
+#include "app_main.h"
 
 #define pin_air800_PKEY 			25	///PC5,air800_PKEY 
 #define pin_air800_DTR 			26	///PB0,air800_DTR
