@@ -248,8 +248,8 @@ const struct rt_spi_ops stm_spi_ops =
     .xfer = spixfer,
 };
 
-struct rt_spi_bus _spi_bus1, _spi_bus2;
-struct stm32_spi _spi1, _spi2;
+struct rt_spi_bus _spi_bus1, _spi_bus2, _spi_bus3;
+struct stm32_spi _spi1, _spi2, _spi3;
 int stm32_spi_register_bus(SPI_TypeDef *SPIx, const char *name)
 {
     struct rt_spi_bus *spi_bus;
@@ -263,6 +263,11 @@ int stm32_spi_register_bus(SPI_TypeDef *SPIx, const char *name)
     {
         spi_bus = &_spi_bus2;
         spi = &_spi2;
+    }
+	else if (SPIx == SPI3)
+    {
+        spi_bus = &_spi_bus3;
+        spi = &_spi3;
     }
     else
     {
@@ -294,9 +299,35 @@ int stm32_hw_spi_init(void)
 #ifdef RT_USING_SPI2
     result = stm32_spi_register_bus(SPI2, "spi2");
 #endif
+#ifdef RT_USING_SPI3
+	result = stm32_spi_register_bus(SPI3, "spi3");
+#endif
     return result;
 }
 INIT_BOARD_EXPORT(stm32_hw_spi_init);
+int sys_flash_w25qxx_init(void)
+{
+	int result = 0;
+	stm32_spi_bus_attach_device(50,"spi3","cs_a15");
+	result = w25qxx_init("flash0","cs_a15");
+	return result;
+}
+INIT_APP_EXPORT(sys_flash_w25qxx_init);
+
+int sys_dfs_mount(void)
+{
+	if (dfs_mount("flash0", "/", "elm", 0, 0) == 0)
+	{
+		rt_kprintf("File System initialized!\n");
+	}
+	else
+		{
+		rt_kprintf("File System initialzation failed!\n");
+		dfs_mkfs("elm","flash0");
+		HAL_NVIC_SystemReset();
+	}
+}
+INIT_APP_EXPORT(sys_dfs_mount);
 
 void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
 {
@@ -342,6 +373,35 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     }
+	else if(spiHandle->Instance==SPI3)
+	{
+		/* USER CODE BEGIN SPI3_MspInit 0 */
+
+		/* USER CODE END SPI3_MspInit 0 */
+		/* SPI3 clock enable */
+		__HAL_RCC_SPI3_CLK_ENABLE();
+		__HAL_RCC_GPIOB_CLK_ENABLE();
+		/**SPI3 GPIO Configuration    
+		PB3     ------> SPI3_SCK
+		PB4     ------> SPI3_MISO
+		PB5     ------> SPI3_MOSI 
+		*/
+		GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_5;
+		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+		GPIO_InitStruct.Pin = GPIO_PIN_4;
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+		/* USER CODE BEGIN SPI3_MspInit 1 */
+
+		/* USER CODE END SPI3_MspInit 1 */
+	}
+	/* USER CODE BEGIN SPI2_MspInit 1 */
+  	/* USER CODE END SPI2_MspInit 1 */
 }
 
 void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
@@ -371,5 +431,24 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
         */
         HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
     }
+	else if(spiHandle->Instance==SPI3)
+	{
+		/* USER CODE BEGIN SPI3_MspDeInit 0 */
+
+		/* USER CODE END SPI3_MspDeInit 0 */
+		/* Peripheral clock disable */
+		__HAL_RCC_SPI3_CLK_DISABLE();
+
+		/**SPI3 GPIO Configuration    
+		PB3     ------> SPI3_SCK
+		PB4     ------> SPI3_MISO
+		PB5     ------> SPI3_MOSI 
+		*/
+		HAL_GPIO_DeInit(GPIOB, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5);
+
+		/* USER CODE BEGIN SPI3_MspDeInit 1 */
+
+		/* USER CODE END SPI3_MspDeInit 1 */
+	}
 }
 #endif /*RT_USING_SPI*/
