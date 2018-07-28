@@ -56,7 +56,11 @@ rt_int8_t air800_Reset(uint8_t nub)
 {
 	//ģ��ϵ�
 	air800_INIT_status = 0;
-	rt_kprintf("L218E restart");
+	rt_kprintf("air800 module restart");
+	air800_RESET_ctr(1);
+	rt_thread_delay(rt_tick_from_millisecond(100));
+	air800_RESET_ctr(0);
+	rt_thread_delay(rt_tick_from_millisecond(3000));
 	rt_event_control(event_air800, RT_IPC_CMD_RESET, RT_NULL);
 	return 0;
 }
@@ -67,7 +71,8 @@ rt_int8_t air800_init(void)
 {
 	static rt_uint32_t recved;
 	static at_response_t resp = RT_NULL;
-	if(RT_EOK == rt_event_recv(event_air800, air800_Power_OK, RT_EVENT_FLAG_OR, RT_WAITING_NO, &recved))
+	static rt_uint8_t respbuf[100];
+	if(RT_EOK == rt_event_recv(event_air800, rt_EVENT_FULL, RT_EVENT_FLAG_OR, RT_WAITING_NO, &recved))
 		{
 	}
 	if((recved&air800_Power_OK) == RT_FALSE)
@@ -81,20 +86,50 @@ rt_int8_t air800_init(void)
 			air800_pkey_ctr(0);
 			rt_thread_delay(rt_tick_from_millisecond(3000));
 			air800_INIT_status++;
-			//rt_kprintf("air800 power on\n");
 		}
 		else if(air800_INIT_status == 1)
 			{
 			air800_pkey_ctr(1);
 			rt_thread_delay(rt_tick_from_millisecond(3000));
 			air800_pkey_ctr(0);
-			rt_thread_delay(rt_tick_from_millisecond(5000));
+			rt_thread_delay(rt_tick_from_millisecond(10000));
 			air800_INIT_status++;
-			//rt_kprintf("air800 power key on\n");
 		}
 		else if(air800_INIT_status == 2)
 			{
-			resp = at_create_resp(32, 0, rt_tick_from_millisecond(3000));
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (resp == RT_NULL)
+			{
+				LOG_E("No memory for response structure!");
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT") != RT_EOK)
+			{
+			}
+			else
+				{
+				air800_INIT_status++;
+			}
+			at_delete_resp(resp);
+			rt_thread_delay(rt_tick_from_millisecond(1000));
+			if(RT_EOK == rt_sem_take(sem_air800_power, rt_tick_from_millisecond(30000)))
+				{
+				air800_INIT_status = 0;
+				rt_event_send(event_air800, air800_Power_OK);
+			}
+			else
+				{
+				air800_INIT_status = 0;
+			}
+		}
+	}
+	else if((recved&air800_Baud_OK) == RT_FALSE)
+		{
+		if(air800_INIT_status == 0)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(3000));
 			if (resp == RT_NULL)
 			{
 				LOG_E("No memory for response structure!");
@@ -103,49 +138,186 @@ rt_int8_t air800_init(void)
 			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
 			体中 */
 			if (at_exec_cmd(resp, "ATE0") != RT_EOK)
-			{
-				//LOG_E("AT client send commands failed, response error or timeout !");
+				{
 			}
 			else
 				{
-				air800_INIT_status++;
-				LOG_D(resp->buf);
+				if(RT_NULL !=  at_resp_get_line_by_kw(resp,"OK"))
+					{
+					air800_INIT_status++;
+				}
 			}
 			at_delete_resp(resp);
-			rt_thread_delay(rt_tick_from_millisecond(1000));
 		}
-		else if(air800_INIT_status == 3)
+		else if(air800_INIT_status == 1)
 			{
-			resp = at_create_resp(32, 0, rt_tick_from_millisecond(10000));
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
 			if (!resp)
 			{
-				LOG_E("No memory for response structure!");
 				return -RT_ENOMEM;
 			}
 			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
 			体中 */
-			if (at_exec_cmd(resp, "AT+CGREG?") != RT_EOK)
-			{
-				//LOG_E("AT client send commands failed, response error or timeout !");
+			if (at_exec_cmd(resp, "AT+CGMR") != RT_EOK)
+				{
 			}
 			else
 				{
-				LOG_D(resp->buf);
+				if(0 < at_resp_parse_line_args_by_kw( resp, "AirM2M", "%s",respbuf))
+					{
+					rt_kprintf(respbuf);
+					rt_event_send(event_air800, air800_Baud_OK);
+					air800_INIT_status = 0;
+				}
 			}
 			at_delete_resp(resp);
-			rt_thread_delay(rt_tick_from_millisecond(1000));
 		}
 	}
-	else if((recved&air800_INIT_OK) == RT_FALSE)
+	else if((recved&air800_ActNet_OK) == RT_FALSE)
 		{
+		if(air800_INIT_status == 0)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+CGATT?") != RT_EOK)
+				{
+			}
+			else
+				{
+				rt_uint8_t gatt_status=0;
+				if(0 < at_resp_parse_line_args_by_kw( resp, "+CGATT:", "+CGATT:%d", &gatt_status))
+					{
+					if(gatt_status == 1)
+						{
+						air800_INIT_status++;
+					}
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 1)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+SAPBR=3,1,\"CONTYPE\",\"GPRS\"") != RT_EOK)
+				{
+			}
+			else
+				{
+				if(RT_NULL != at_resp_get_line_by_kw( resp, "OK"))
+					{
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 2)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+SAPBR=3,1,\"APN\",\"CMNET\"") != RT_EOK)
+				{
+			}
+			else
+				{
+				if(RT_NULL != at_resp_get_line_by_kw( resp, "OK"))
+					{
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 3)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+SAPBR=5,1") != RT_EOK)
+				{
+			}
+			else
+				{
+				if(RT_NULL != at_resp_get_line_by_kw( resp, "OK"))
+					{
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 4)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+SAPBR=1,1") != RT_EOK)
+				{
+			}
+			else
+				{
+				if(RT_NULL != at_resp_get_line_by_kw( resp, "OK"))
+					{
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 5)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+SAPBR=2,1") != RT_EOK)
+				{
+			}
+			else
+				{
+				rt_uint8_t conectstatus=0,cid=0,ip[20];
+				rt_memset(ip, 0x00, 20);
+				if(0 < at_resp_parse_line_args_by_kw( resp, "+SAPBR:", "+SAPBR:%d,%d,%s", &cid, &conectstatus, ip))
+					{
+					rt_kprintf("locoal ip=%s",ip);
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
 
 	}
 }
-
+rt_sem_t sem_air800_power = RT_NULL;
 rt_event_t event_air800 = RT_NULL;
 void air800_thread_entry(void *parameter)
 {
 	air800_ctr_io_hw_init();
+	sem_air800_power = (rt_sem_t)rt_malloc(sizeof(struct rt_semaphore));
+	rt_sem_init(sem_air800_power, "sem_air800_power", 0, RT_IPC_FLAG_FIFO);
 	event_air800 = (rt_event_t)rt_malloc(sizeof(struct rt_event));
 	rt_event_init(event_air800, "event_air800", RT_IPC_FLAG_FIFO);
 	while (1)

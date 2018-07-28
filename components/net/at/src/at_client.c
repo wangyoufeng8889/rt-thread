@@ -357,8 +357,7 @@ static char at_client_getchar(void)
     at_client_t client = at_client_local;
 
     rt_sem_take(client->rx_notice, RT_WAITING_FOREVER);
-
-    rt_device_read(client->device, 0, &ch, 1);
+    while(0 == rt_device_read(client->device, 0, &ch, 1));
 
     return ch;
 }
@@ -576,7 +575,7 @@ static void client_parser(at_client_t client)
 
 static rt_err_t at_client_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    rt_sem_release(at_client_local->rx_notice);
+	rt_sem_control(at_client_local->rx_notice, RT_IPC_CMD_RESET, (void *)size);
     return RT_EOK;
 }
 
@@ -651,7 +650,7 @@ int at_client_init(void)
     {
         RT_ASSERT(at_client_local->device->type == RT_Device_Class_Char);
 
-        rt_device_open(at_client_local->device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
+        rt_device_open(at_client_local->device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX);
 
         rt_device_set_rx_indicate(at_client_local->device, at_client_rx_ind);
     }

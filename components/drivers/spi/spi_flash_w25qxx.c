@@ -42,9 +42,13 @@
 #define PAGE_SIZE           4096
 
 /* JEDEC Manufacturer��s ID */
-#define MF_ID           (0xEF)
+//#define MF_ID           (0xEF)
+///MTC_M25L8006
+#define MF_ID           (0xC2)
 
 /* JEDEC Device ID: Memory type and Capacity */
+#define MTC_M25L8006_E        (0x2014) /* MTC_M25L8006 */
+
 #define MTC_W25Q80_BV         (0x4014) /* W25Q80BV */
 #define MTC_W25Q16_BV_CL_CV   (0x4015) /* W25Q16BV W25Q16CL W25Q16CV  */
 #define MTC_W25Q16_DW         (0x6015) /* W25Q16DW  */
@@ -332,13 +336,18 @@ rt_err_t w25qxx_init(const char * flash_device_name, const char * spi_device_nam
         }
 
         spi_flash_device.geometry.bytes_per_sector = 4096;
-        spi_flash_device.geometry.block_size = 4096; /* block erase: 4k */
+        spi_flash_device.geometry.block_size = 16*4096; /* block erase: 4k */
 
         /* get memory type and capacity */
         memory_type_capacity = id_recv[1];
         memory_type_capacity = (memory_type_capacity << 8) | id_recv[2];
 
-        if(memory_type_capacity == MTC_W25Q128_BV)
+         if(memory_type_capacity == MTC_M25L8006_E)
+        {
+            FLASH_TRACE("W25Q80BV detection\r\n");
+            spi_flash_device.geometry.sector_count = 256;
+        }
+		else if(memory_type_capacity == MTC_W25Q128_BV)
         {
             FLASH_TRACE("W25Q128BV detection\r\n");
             spi_flash_device.geometry.sector_count = 4096;

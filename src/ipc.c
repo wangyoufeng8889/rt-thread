@@ -512,6 +512,10 @@ rt_err_t rt_sem_control(rt_sem_t sem, int cmd, void *arg)
 
         /* set new value */
         sem->value = (rt_uint16_t)value;
+		RT_DEBUG_LOG(RT_DEBUG_IPC, ("thread %s rt_sem_control sem:%s, which value is: %d\n",
+											rt_thread_self()->name,
+											((struct rt_object *)sem)->name,
+											sem->value));
 
         /* enable interrupt */
         rt_hw_interrupt_enable(level);
