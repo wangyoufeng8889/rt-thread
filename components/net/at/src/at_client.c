@@ -356,8 +356,9 @@ static char at_client_getchar(void)
     char ch;
     at_client_t client = at_client_local;
 
-    rt_sem_take(client->rx_notice, RT_WAITING_FOREVER);
-    while(0 == rt_device_read(client->device, 0, &ch, 1));
+    do{
+		rt_sem_take(client->rx_notice, RT_WAITING_FOREVER);
+    }while(0 == rt_device_read(client->device, 0, &ch, 1));
 
     return ch;
 }
