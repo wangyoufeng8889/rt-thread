@@ -95,6 +95,7 @@
 #define RT_USING_HWTIMER
 #define RT_USING_PIN
 #define RT_USING_MTD_NOR
+#define RT_USING_RTC
 #define RT_USING_SPI
 #define RT_USING_W25QXX
 
@@ -110,6 +111,13 @@
 
 /* Socket abstraction layer */
 
+#define RT_USING_SAL
+
+/* protocol stack implement */
+
+#define SAL_USING_AT
+#define SAL_USING_POSIX
+#define SAL_PROTO_FAMILIES_NUM 4
 
 /* light weight TCP/IP stack */
 
@@ -124,6 +132,7 @@
 #define AT_USING_CLIENT
 #define AT_CLIENT_DEVICE "uart1"
 #define AT_CLIENT_RECV_BUFF_LEN 1024
+#define AT_USING_SOCKET
 #define AT_USING_CLI
 
 /* VBUS(Virtual Software BUS) */
@@ -133,11 +142,6 @@
 
 
 /* RT-Thread online packages */
-
-/* system packages */
-
-/* RT-Thread GUI Engine */
-
 
 /* IoT - internet of things */
 
@@ -149,6 +153,21 @@
 
 /* Wiced WiFi */
 
+#define PKG_USING_AT_DEVICE
+#define AT_DEVICE_AIR800
+#define AT_DEVICE_SOCKETS_NUM 5
+#define PKG_USING_AT_DEVICE_LATEST_VERSION
+
+/* IoT Cloud */
+
+#define PKG_USING_ALI_IOTKIT
+#define PKG_USING_ALI_IOTKIT_IS_LINKDEVELOP
+#define PKG_USING_ALI_IOTKIT_PRODUCT_KEY "a1Git2TQnzC"
+#define PKG_USING_ALI_IOTKIT_DEVICE_NAME "869300030173060"
+#define PKG_USING_ALI_IOTKIT_DEVICE_SECRET "bzj9w6UqfamKMC0E8a8X7Sr4pt939uyK"
+#define PKG_USING_ALI_IOTKIT_MQTT
+#define PKG_USING_ALI_IOTKIT_MQTT_DIRECT
+#define PKG_USING_ALI_IOTKIT_LATEST_VERSION
 
 /* security packages */
 
@@ -162,7 +181,16 @@
 /* tools packages */
 
 
+/* system packages */
+
+
+/* peripheral libraries and drivers */
+
+
 /* miscellaneous packages */
+
+
+/* sample package */
 
 
 /* example package: hello */

@@ -42,7 +42,7 @@ static void urc_CallReady(const char *data, rt_size_t size)
 	rt_sem_release(sem_air800_power);
 	
 }
-
+#if 0
 static struct at_urc urc_table[] = {
 	{"RDY", "\r\n", urc_RDY},
 	{"+CFUN:", "\r\n", urc_CFUN},
@@ -61,5 +61,6 @@ int at_client_port_init(void)
 	at_set_urc_table(urc_table, sizeof(urc_table)/sizeof(urc_table[0]));
 	return 0;
 }
+#endif
 
 

@@ -122,8 +122,10 @@ rt_int8_t air800_init(void)
 			else
 				{
 				air800_INIT_status = 0;
+				rt_event_send(event_air800, air800_Power_OK);
 			}
 		}
+		#if 0
 	}
 	else if((recved&air800_Baud_OK) == RT_FALSE)
 		{
@@ -184,6 +186,31 @@ rt_int8_t air800_init(void)
 			}
 			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
 			体中 */
+			if (at_exec_cmd(resp, "AT+CGREG?") != RT_EOK)
+				{
+			}
+			else
+				{
+				rt_uint8_t n=0,stat=0;
+				if(0 < at_resp_parse_line_args_by_kw( resp, "+CGREG:", "+CGREG:%d,%d", &n, &stat))
+					{
+					if(stat == 1)
+						{
+						air800_INIT_status++;
+					}
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 1)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
 			if (at_exec_cmd(resp, "AT+CGATT?") != RT_EOK)
 				{
 			}
@@ -200,7 +227,7 @@ rt_int8_t air800_init(void)
 			}
 			at_delete_resp(resp);
 		}
-		else if(air800_INIT_status == 1)
+		else if(air800_INIT_status == 2)
 			{
 			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
 			if (!resp)
@@ -221,7 +248,7 @@ rt_int8_t air800_init(void)
 			}
 			at_delete_resp(resp);
 		}
-		else if(air800_INIT_status == 2)
+		else if(air800_INIT_status == 3)
 			{
 			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
 			if (!resp)
@@ -242,7 +269,7 @@ rt_int8_t air800_init(void)
 			}
 			at_delete_resp(resp);
 		}
-		else if(air800_INIT_status == 3)
+		else if(air800_INIT_status == 4)
 			{
 			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
 			if (!resp)
@@ -263,7 +290,7 @@ rt_int8_t air800_init(void)
 			}
 			at_delete_resp(resp);
 		}
-		else if(air800_INIT_status == 4)
+		else if(air800_INIT_status == 5)
 			{
 			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
 			if (!resp)
@@ -284,7 +311,7 @@ rt_int8_t air800_init(void)
 			}
 			at_delete_resp(resp);
 		}
-		else if(air800_INIT_status == 5)
+		else if(air800_INIT_status == 6)
 			{
 			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
 			if (!resp)
@@ -308,6 +335,70 @@ rt_int8_t air800_init(void)
 			}
 			at_delete_resp(resp);
 		}
+		else if(air800_INIT_status == 6)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+CSTT=\"CMNET\"") != RT_EOK)
+				{
+			}
+			else
+				{
+				if(RT_NULL != at_resp_get_line_by_kw( resp, "OK"))
+					{
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 6)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+CIICR") != RT_EOK)
+				{
+			}
+			else
+				{
+				if(RT_NULL != at_resp_get_line_by_kw( resp, "OK"))
+					{
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
+		else if(air800_INIT_status == 6)
+			{
+			resp = at_create_resp(128, 0, rt_tick_from_millisecond(10000));
+			if (!resp)
+			{
+				return -RT_ENOMEM;
+			}
+			/* 发送 AT 命令并接收 AT Server 响应数据，数据及信息存放在 resp 结构
+			体中 */
+			if (at_exec_cmd(resp, "AT+CIFSR") != RT_EOK)
+				{
+			}
+			else
+				{
+				if(RT_NULL != at_resp_get_line_by_kw( resp, "OK"))
+					{
+					air800_INIT_status++;
+				}
+			}
+			at_delete_resp(resp);
+		}
+		#endif
 
 	}
 }

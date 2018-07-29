@@ -2370,6 +2370,132 @@
         </settings>
     </configuration>
     <group>
+        <name>ali-iotkit</name>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\system\iotkit-system\src\ca.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\system\iotkit-system\src\class_interface.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\iot-coap-c\CoAPDeserialize.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\iot-coap-c\CoAPExport.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\iot-coap-c\CoAPMessage.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\iot-coap-c\CoAPNetwork.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\iot-coap-c\CoAPSerialize.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\system\iotkit-system\src\guider.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\ports\rtthread\HAL_OS_rtthread.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\ports\rtthread\HAL_TCP_rtthread.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\ports\rtthread\HAL_UDP_rtthread.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\system\iotkit-system\src\id2_guider.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\coap\iotx_ca_cert.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\coap\iotx_coap_api.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\system\iotkit-system\src\iotx_device.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\LITE-utils\json_parser.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\LITE-utils\json_token.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\log\LITE-log\lite-log.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\LITE-utils\lite-utils_testsuites.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\LITE-utils\mem_stats.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\mqtt_client.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\mqtt_instance.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\MQTTPacket\MQTTConnectClient.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\MQTTPacket\MQTTDeserializePublish.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\MQTTPacket\MQTTPacket.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\MQTTPacket\MQTTSerializePublish.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\MQTTPacket\MQTTSubscribeClient.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\mqtt\Link-MQTT\MQTTPacket\MQTTUnsubscribeClient.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\system\iotkit-system\src\report.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\system\iotkit-system\src\sdk-impl.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\packages\LITE-utils\string_utils.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\digest\utils_base64.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\misc\utils_epoch_time.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\digest\utils_hmac.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\misc\utils_httpc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\misc\utils_list.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\digest\utils_md5.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\misc\utils_net.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\digest\utils_sha1.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\digest\utils_sha256.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\packages\ali-iotkit-latest\iotkit-embedded\src\utils\misc\utils_timer.c</name>
+        </file>
+    </group>
+    <group>
         <name>Applications</name>
         <file>
             <name>$PROJ_DIR$\applications\app_air800.c</name>
@@ -2399,7 +2525,16 @@
             <name>$PROJ_DIR$\..\..\components\net\at\src\at_client.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\components\net\at\at_socket\at_socket.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\components\net\at\src\at_utils.c</name>
+        </file>
+    </group>
+    <group>
+        <name>at_device</name>
+        <file>
+            <name>$PROJ_DIR$\packages\at_device-latest\at_socket_air800.c</name>
         </file>
     </group>
     <group>
@@ -2442,6 +2577,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\components\drivers\src\ringbuffer.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\components\drivers\rtc\rtc.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\components\drivers\serial\serial.c</name>
@@ -2649,6 +2787,27 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\timer.c</name>
+        </file>
+    </group>
+    <group>
+        <name>SAL</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\components\net\sal_socket\impl\af_inet_at.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\components\net\sal_socket\dfs_net\dfs_net.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\components\net\sal_socket\socket\net_netdb.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\components\net\sal_socket\socket\net_sockets.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\components\net\sal_socket\src\sal_ipaddr.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\components\net\sal_socket\src\sal_socket.c</name>
         </file>
     </group>
     <group>

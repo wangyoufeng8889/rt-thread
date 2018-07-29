@@ -26,3 +26,11 @@ tools/kconfig-frontends/kconfig-mconf
 packages
 cconfig.h
 GPUCache
+bsp/stm32f10x-HAL/settings/project.crun
+bsp/stm32f10x-HAL/settings/project.dbgdt
+bsp/stm32f10x-HAL/settings/project.Debug.cspy.bat
+bsp/stm32f10x-HAL/settings/project.Debug.cspy.ps1
+bsp/stm32f10x-HAL/settings/project.Debug.driver.xcl
+bsp/stm32f10x-HAL/settings/project.Debug.general.xcl
+bsp/stm32f10x-HAL/settings/project.dnx
+bsp/stm32f10x-HAL/settings/project.wsdt
